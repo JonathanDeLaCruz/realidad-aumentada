@@ -3,31 +3,23 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-  <title>AR.js BG Test (videoTexture)</title>
+  <title>AR.js BG Test (compat)</title>
   <style>html,body{margin:0;height:100%;background:#000;overflow:hidden}</style>
 
-  <!-- Usa CHROME móvil para esta prueba -->
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <!-- Fija una versión estable de AR.js -->
+  <!-- 🔧 Versiones compatibles -->
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-  <!--
-    Cambios clave:
-    - videoTexture: true  → fuerza el uso del frame de cámara como textura (más compatible).
-    - facingMode: environment → cámara trasera.
-    - precision: lowp → evita negras en GPUs exigentes.
-    - antialias: false → menos probabilidad de fallar en WebView/navegador móvil.
-  -->
   <a-scene
     embedded
     vr-mode-ui="enabled:false"
     renderer="alpha:true; antialias:false; precision:lowp"
     device-orientation-permission-ui="enabled:false"
-    arjs="sourceType: webcam; videoTexture: true; facingMode: environment;
-          debugUIEnabled:false; sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
-    
-    <!-- Cubo de referencia al frente -->
+    arjs="sourceType: webcam; videoTexture: true; facingMode: environment; debugUIEnabled:false;
+          sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
+
+    <!-- Un cubo fijo para verificar render -->
     <a-box position="0 0 -2" depth="0.5" height="0.5" width="0.5" color="#4CAF50" opacity="0.9"></a-box>
 
     <a-entity camera look-controls="enabled:false"></a-entity>
