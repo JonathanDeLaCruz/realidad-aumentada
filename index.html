@@ -3,25 +3,34 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-  <title>AR.js BG Test</title>
+  <title>AR.js BG Test (videoTexture)</title>
   <style>html,body{margin:0;height:100%;background:#000;overflow:hidden}</style>
+
+  <!-- Usa CHROME móvil para esta prueba -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.3/aframe/build/aframe-ar.js"></script>
+  <!-- Fija una versión estable de AR.js -->
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-  <!-- Solo fondo de cámara con AR.js, sin marcadores ni modelos -->
+  <!--
+    Cambios clave:
+    - videoTexture: true  → fuerza el uso del frame de cámara como textura (más compatible).
+    - facingMode: environment → cámara trasera.
+    - precision: lowp → evita negras en GPUs exigentes.
+    - antialias: false → menos probabilidad de fallar en WebView/navegador móvil.
+  -->
   <a-scene
     embedded
     vr-mode-ui="enabled:false"
-    renderer="antialias:false; alpha:true; precision:mediump"
+    renderer="alpha:true; antialias:false; precision:lowp"
     device-orientation-permission-ui="enabled:false"
-    arjs="sourceType: webcam; facingMode: environment; detectionMode: mono; debugUIEnabled:false;
-          sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
+    arjs="sourceType: webcam; videoTexture: true; facingMode: environment;
+          debugUIEnabled:false; sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
     
-    <!-- Un cubo fijo en el centro para confirmar render -->
+    <!-- Cubo de referencia al frente -->
     <a-box position="0 0 -2" depth="0.5" height="0.5" width="0.5" color="#4CAF50" opacity="0.9"></a-box>
 
-    <a-entity camera></a-entity>
+    <a-entity camera look-controls="enabled:false"></a-entity>
   </a-scene>
 </body>
 </html>
