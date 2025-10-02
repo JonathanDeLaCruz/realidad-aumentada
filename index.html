@@ -3,43 +3,27 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-  <title>AR – GLB local (sin ARCore)</title>
+  <title>AR TEST – Cubo</title>
   <style>html,body{margin:0;height:100%;background:#000;overflow:hidden}</style>
-
-  <!-- A-Frame + AR.js (marker-based, no ARCore) -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.3/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-  <!--
-    Usamos AR por marcador (Hiro). No requiere ARCore.
-    Puedes imprimir el marcador Hiro (búscalo como "hiro marker pdf") o mostrarlo en otra pantalla.
-  -->
   <a-scene
     embedded
     vr-mode-ui="enabled:false"
     renderer="antialias:true; alpha:true; precision:mediump"
     device-orientation-permission-ui="enabled:false"
     arjs="sourceType: webcam; facingMode: environment; detectionMode: mono; trackingMethod: best; debugUIEnabled:false; sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
-
-    <!-- Marcador Hiro (desde CDN oficial) -->
+    
+    <!-- Marcador Hiro (imprime o muestra en otra pantalla) -->
     <a-marker type="pattern"
       url="https://raw.githubusercontent.com/AR-js-org/AR.js/master/three.js/data/markers/patt.hiro">
-
-      <!-- Tu GLB local empaquetado en /models -->
-      <a-entity
-        gltf-model="models/chiapas_mujer.glb"
-        position="0 0 0"
-        rotation="0 0 0"
-        scale="0.35 0.35 0.35"
-        animation-mixer>
-      </a-entity>
-
-      <!-- Planito de referencia (suelo) -->
-      <a-plane position="0 0 0" rotation="-90 0 0" width="2" height="2" color="#666" opacity="0.25"></a-plane>
+      <!-- CUBO simple (sin GLB) -->
+      <a-box position="0 0.5 0" depth="1" height="1" width="1" color="#4CAF50" material="opacity:0.9"></a-box>
+      <a-plane position="0 0 0" rotation="-90 0 0" width="2" height="2" color="#FFC107" opacity="0.7"></a-plane>
     </a-marker>
 
-    <!-- Cámara requerida por AR.js -->
     <a-entity camera></a-entity>
   </a-scene>
 </body>
