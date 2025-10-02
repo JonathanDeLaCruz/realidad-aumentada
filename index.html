@@ -1,99 +1,27 @@
 <!doctype html>
 <html lang="es">
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-<title>Cam Test</title>
-<style>
-  html,body{margin:0;height:100%;background:#000;color:#0f0;font:14px monospace}
-  #top{position:fixed;left:8px;right:8px;top:8px;z-index:10;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  select,button{padding:6px 10px;border-radius:8px;border:0}
-  button{background:#0f0;color:#000;font-weight:700}
-  #video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#111}
-  #log{position:fixed;left:8px;right:8px;bottom:8px;max-height:40%;overflow:auto;white-space:pre-wrap}
-</style>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
+  <title>AR.js BG Test</title>
+  <style>html,body{margin:0;height:100%;background:#000;overflow:hidden}</style>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.3/aframe/build/aframe-ar.js"></script>
+</head>
 <body>
-  <div id="top">
-    <label>Cámara:</label>
-    <select id="cams"></select>
-    <button id="refresh">Refrescar</button>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
-  </div>
-  <video id="video" autoplay playsinline muted></video>
-  <div id="log"></div>
+  <!-- Solo fondo de cámara con AR.js, sin marcadores ni modelos -->
+  <a-scene
+    embedded
+    vr-mode-ui="enabled:false"
+    renderer="antialias:false; alpha:true; precision:mediump"
+    device-orientation-permission-ui="enabled:false"
+    arjs="sourceType: webcam; facingMode: environment; detectionMode: mono; debugUIEnabled:false;
+          sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
+    
+    <!-- Un cubo fijo en el centro para confirmar render -->
+    <a-box position="0 0 -2" depth="0.5" height="0.5" width="0.5" color="#4CAF50" opacity="0.9"></a-box>
 
-<script>
-const logEl=document.getElementById('log'); const camsEl=document.getElementById('cams');
-const video=document.getElementById('video'); let stream=null;
-
-function log(m){ console.log(m); logEl.textContent += m+"\n"; logEl.scrollTop=logEl.scrollHeight; }
-
-async function listCams(){
-  try{
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const vids = devices.filter(d => d.kind === 'videoinput');
-    camsEl.innerHTML = '';
-    vids.forEach((d,i)=>{
-      const opt=document.createElement('option');
-      opt.value = d.deviceId;
-      opt.textContent = d.label || `Cámara ${i+1}`;
-      camsEl.appendChild(opt);
-    });
-    log(`Cámaras encontradas: ${vids.length}`);
-  }catch(e){ log('enumerateDevices error: '+e); }
-}
-
-async function startWith(constraints, tag){
-  try{
-    log('Intento '+tag+': '+JSON.stringify(constraints));
-    const s = await navigator.mediaDevices.getUserMedia(constraints);
-    stream = s; video.srcObject = s;
-    log('OK: stream activo ('+tag+')');
-    return true;
-  }catch(e){
-    log('Fallo '+tag+': '+(e.name||'')+' '+(e.message||e));
-    return false;
-  }
-}
-
-async function startCam(){
-  stopCam();
-  const dev = camsEl.value || undefined;
-  const tries = [];
-
-  if (dev) {
-    tries.push({video:{deviceId:{exact:dev}, width:{ideal:1280}, height:{ideal:720}}, audio:false, tag:'deviceId 720p'});
-    tries.push({video:{deviceId:{exact:dev}}, audio:false, tag:'deviceId simple'});
-  }
-  tries.push({video:{facingMode:{ideal:'environment'}, width:{ideal:1280}, height:{ideal:720}}, audio:false, tag:'environment 720p'});
-  tries.push({video:{facingMode:{ideal:'environment'}}, audio:false, tag:'environment simple'});
-  tries.push({video:true, audio:false, tag:'video:true'});
-
-  for (const t of tries) {
-    if (await startWith({video:t.video, audio:t.audio}, t.tag)) return;
-  }
-  log('❌ No se pudo iniciar la cámara.');
-}
-
-function stopCam(){ if (stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; log('Stream detenido'); } }
-
-document.getElementById('start').onclick = startCam;
-document.getElementById('stop').onclick = stopCam;
-document.getElementById('refresh').onclick = listCams;
-
-(async function init(){
-  log('UA: '+navigator.userAgent);
-  try{
-    if (navigator.permissions) {
-      const st = await navigator.permissions.query({name:'camera'}).catch(()=>null);
-      log('permissions.camera = '+(st? st.state : 'N/A'));
-    }
-  }catch(e){ log('perm query err: '+e); }
-
-  // algunos navegadores requieren un primer getUserMedia para revelar labels
-  try { await navigator.mediaDevices.getUserMedia({video:true}); } catch(_) {}
-  await listCams();
-})();
-</script>
+    <a-entity camera></a-entity>
+  </a-scene>
 </body>
 </html>
