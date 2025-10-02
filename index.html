@@ -3,28 +3,13 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
-  <title>AR en App (A-Frame 1.2 + AR.js 3.3)</title>
-  <style>
-    html,body{margin:0;height:100%;background:#000;overflow:hidden}
-    #hud{position:fixed;left:0;right:0;top:0;color:#0f0;font:12px monospace;padding:6px;z-index:20;pointer-events:none}
-    #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;z-index:15;background:rgba(0,0,0,.6)}
-    .hidden{display:none}
-  </style>
-
-  <!-- Versiones compatibles (evitan el error PlaneBufferGeometry y fondos negros) -->
+  <title>AR TEST – Cubo (app)</title>
+  <style>html,body{margin:0;height:100%;background:#000;overflow:hidden}</style>
+  <!-- Versiones compatibles -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-  <div id="hud">Apunta al marcador <b>Hiro</b>. Si no se ve, aléjate 30–40cm y mejora la luz.</div>
-  <div id="loading">Cargando modelo…</div>
-
-  <!--
-    Claves para WebView Android:
-    - renderer: antialias:false, precision:lowp → evita negros por GPU.
-    - arjs: videoTexture:true + facingMode:environment → cámara trasera estable.
-    - source/display width/height moderados → menos estrés de GPU.
-  -->
   <a-scene
     embedded
     vr-mode-ui="enabled:false"
@@ -32,40 +17,14 @@
     device-orientation-permission-ui="enabled:false"
     arjs="sourceType: webcam; videoTexture: true; facingMode: environment; detectionMode: mono; debugUIEnabled:false;
           sourceWidth:1280; sourceHeight:720; displayWidth:1280; displayHeight:720;">
-
-    <!-- Marcador Hiro (puedes cambiarlo a un .patt local luego) -->
+    
     <a-marker type="pattern"
       url="https://raw.githubusercontent.com/AR-js-org/AR.js/master/three.js/data/markers/patt.hiro">
-
-      <!-- ⚠️ usa el archivo local comprimido si es posible -->
-      <a-entity
-        id="mdl"
-        gltf-model="models/chiapas_mujer.glb"
-        position="0 0 0"
-        rotation="0 0 0"
-        scale="0.3 0.3 0.3"
-        animation-mixer>
-      </a-entity>
-
-      <!-- Suelo de referencia -->
-      <a-plane position="0 0 0" rotation="-90 0 0" width="2" height="2" color="#666" opacity="0.25"></a-plane>
+      <a-box position="0 0.5 0" depth="1" height="1" width="1" color="#4CAF50" material="opacity:0.9"></a-box>
+      <a-plane position="0 0 0" rotation="-90 0 0" width="2" height="2" color="#FFC107" opacity="0.6"></a-plane>
     </a-marker>
 
     <a-entity camera look-controls="enabled:false"></a-entity>
   </a-scene>
-
-  <script>
-    // Oculta el overlay de "Cargando modelo…" cuando termine de cargar
-    const loading = document.getElementById('loading');
-    const mdl = document.getElementById('mdl');
-    function hideLoading(){ loading.classList.add('hidden'); }
-    mdl.addEventListener('model-loaded', hideLoading);
-    mdl.addEventListener('model-error', e => {
-      loading.textContent = 'Error cargando GLB (revisa la ruta o reduce peso)';
-      console.error('model-error', e && e.detail ? e.detail : e);
-    });
-    // Por si el modelo ya estaba en caché
-    setTimeout(()=>{ if (mdl.getObject3D('mesh')) hideLoading(); }, 1000);
-  </script>
 </body>
 </html>
